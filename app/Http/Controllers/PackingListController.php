@@ -29,6 +29,8 @@ class PackingListController extends Controller
             $pol = $this->getCellByRowAndColumn(3, 2);
             $pod = $this->getCellByRowAndColumn(4, 2);
             $tdVessel = $this->getCellByRowAndColumn(5, 2);
+            $tdVessel = str_replace('/', '-', $tdVessel);
+            $tdVessel = date('d F Y', strtotime($tdVessel));
             $etaVendor = $this->getCellByRowAndColumn(6, 2);
 
             //get table
