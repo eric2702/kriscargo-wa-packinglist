@@ -3,6 +3,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { reactive } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/vue3";
+import axios from "axios";
 
 const form = useForm({
     file: null,
@@ -74,33 +75,45 @@ const handleSubmit = (e) => {
             },
             responseType: "blob",
         })
-        .then((response) => {
-            // Create a blob URL for the response data
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-
-            // Create a temporary anchor element
-            const link = document.createElement("a");
-            link.href = url;
-            //get the filename from the response headers
-            let filename = response.headers["content-disposition"]
-                .split(";")[1]
-                .split("=")[1];
-            //remove the double quotes
-            filename = filename.replace(/"/g, "");
-            link.setAttribute("download", filename); // set the download attribute with the desired file name
-            document.body.appendChild(link);
-
-            // Trigger a click event on the anchor element to start the download
-            link.click();
-
-            // Remove the temporary anchor element
-            document.body.removeChild(link);
+        .then(async (response) => {
+            // Check if the response is JSON
+            const contentType = response.headers["content-type"];
+            if (contentType && contentType.includes("application/json")) {
+                const responseData = await response.data.text();
+                const responseJson = JSON.parse(responseData);
+                console.log(responseJson.success);
+                alert(responseJson.message);
+                if (!responseJson.success) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: responseJson.message,
+                    });
+                    return;
+                }
+            } else {
+                // If response is not JSON, proceed to download
+                const url = window.URL.createObjectURL(
+                    new Blob([response.data])
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                let filename = response.headers["content-disposition"]
+                    .split(";")[1]
+                    .split("=")[1]
+                    .replace(/"/g, "");
+                link.setAttribute("download", filename);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         })
         .catch((error) => {
+            let message = "An error occurred";
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: error.response.data.message,
+                text: message,
             });
         })
         .finally(() => {

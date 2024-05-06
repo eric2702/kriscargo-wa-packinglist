@@ -20,6 +20,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('/testapi', [PackingListController::class, 'testApi'])->name('testapi');
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');

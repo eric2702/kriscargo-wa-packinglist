@@ -63,6 +63,11 @@
             text-align: right;
         }
 
+        .info td {
+            /* maximum width */
+            max-width: 50px !important;
+        }
+
         /* give inside border to .barang */
         .barang th {
             border: 1px solid #000;
@@ -76,8 +81,8 @@
             /* only lft and right */
             border-left: 1px solid #000;
             border-right: 1px solid #000;
-        }
 
+        }
 
         table td {
             vertical-align: top;
@@ -132,80 +137,73 @@
             <td>
                 <h6>CUSTOMER: <span style="font-weight: normal">{{ $customer }}</span></h6>
             </td>
-            {{-- rute --}}
             <td>
                 <h6>RUTE: <span style="font-weight: normal">{{ $rute }}</span></h6>
             </td>
         </tr>
         <tr>
-            {{-- alamat --}}
             <td>
                 <h6>ALAMAT: <span style="font-weight: normal">{{ $alamat }}</span></h6>
             </td>
-            {{-- trip --}}
-            <td>
-                <h6>TRIP: <span style="font-weight: normal">{{ $trip }}</span></h6>
-            </td>
-        </tr>
-        <tr>
-            {{-- no_telp --}}
-            <td>
-                <h6>NO TELP: <span style="font-weight: normal">{{ $no_telp }}</span></h6>
-            </td>
-            {{-- kapal --}}
             <td>
                 <h6>KAPAL: <span style="font-weight: normal">{{ $kapal }}</span></h6>
             </td>
+            {{-- <td>
+                <h6>TRIP: <span style="font-weight: normal">{{ $trip }}</span></h6>
+            </td> --}}
         </tr>
         <tr>
-            {{-- top --}}
             <td>
-                <h6>TOP: <span style="font-weight: normal">{{ $top }}</span></h6>
+                <h6>NO TELP: <span style="font-weight: normal">{{ $no_telp }}</span></h6>
             </td>
-            {{-- jenis_kiriman_type_cont --}}
             <td>
+                <h6>VOYAGE: <span style="font-weight: normal">{{ $voyage }}</span></h6>
+            </td>
+
+        </tr>
+        <tr>
+
+            <td>
+                {{-- <h6>TOP: <span style="font-weight: normal">{{ $top }}</span></h6> --}}
+            </td>
+            <td>
+                <h6>BERANGKAT: <span style="font-weight: normal">{{ $tanggal_berangkat }}</span></h6>
+            </td>
+            {{-- <td>
                 <h6>JENIS KIRIMAN / TYPE CONT: <span style="font-weight: normal">{{ $jenis_kiriman_type_cont }}</span>
                 </h6>
-            </td>
+            </td> --}}
         </tr>
         <tr>
-            {{-- lokasi_bayar --}}
             <td>
-                <h6>LOKASI BAYAR: <span style="font-weight: normal">{{ $lokasi_bayar }}</span></h6>
+                {{-- <h6>LOKASI BAYAR: <span style="font-weight: normal">{{ $lokasi_bayar }}</span></h6> --}}
             </td>
-            {{-- tanggal_berangkat --}}
-            <td>
-                <h6>TANGGAL BERANGKAT: <span style="font-weight: normal">{{ $tanggal_berangkat }}</span></h6>
-            </td>
+
         </tr>
         <tr>
             <td></td>
-            {{-- berita_acara --}}
             <td>
-                <h6>BERITA ACARA: <span style="font-weight: normal">{{ $berita_acara }}</span></h6>
+                {{-- <h6>BERITA ACARA: <span style="font-weight: normal">{{ $berita_acara }}</span></h6> --}}
             </td>
         </tr>
         <tr>
-            {{-- customer penerima --}}
             <td>
-                <h6>CUSTOMER PENERIMA: <span style="font-weight: normal">{{ $customer_penerima }}</span></h6>
+                {{-- <h6>CUSTOMER PENERIMA: <span style="font-weight: normal">{{ $customer_penerima }}</span></h6> --}}
             </td>
-            {{-- buruh bongkar --}}
             <td>
-                <h6>BURUH BONGKAR: <span style="font-weight: normal">{{ $buruh_bongkar }}</span></h6>
+                {{-- <h6>BURUH BONGKAR: <span style="font-weight: normal">{{ $buruh_bongkar }}</span></h6> --}}
             </td>
         </tr>
         <tr>
-            {{-- alamat penerima --}}
             <td>
-                <h6>ALAMAT PENERIMA: <span style="font-weight: normal">{{ $alamat_penerima }}</span></h6>
+                {{-- <h6>ALAMAT PENERIMA: <span style="font-weight: normal">{{ $alamat_penerima }}</span></h6> --}}
             </td>
         </tr>
     </table>
 
     {{-- make a table with header background gray --}}
     {{-- make a table with header background gray --}}
-    <table class="barang" style="border-collapse: collapse; border: 1px solid #000; margin-top:50px;">
+    <table class="barang" style="border-collapse: collapse; margin-top:20px;">
         <thead style="background-color: #999999;">
             <tr>
                 <th style="padding: 5px;">
@@ -214,9 +212,7 @@
                 <th style="padding: 5px;">
                     <h6>QTY</h6>
                 </th>
-                <th style="padding: 5px;">
-                    <h6>KODE BARANG</h6>
-                </th>
+
                 <th style="padding: 5px;">
                     <h6>NAMA BARANG</h6>
                 </th>
@@ -238,6 +234,15 @@
                 <th style="padding: 5px;">
                     <h6>TOTAL BERAT</h6>
                 </th>
+                <th style="padding: 5px;">
+                    <h6>CONTAINER</h6>
+                </th>
+                <th style="padding: 5px;">
+                    <h6>JENIS ORDER</h6>
+                </th>
+                <th style="padding: 5px;">
+                    <h6>PENERIMA</h6>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -251,9 +256,7 @@
                     <td>
                         <p style="padding: 5px; text-align:center">{{ $item['QTY'] }}</p>
                     </td>
-                    <td>
-                        <p style="padding: 5px; text-align:center">{{ $item['KODE_BARANG'] }}</p>
-                    </td>
+
                     <td>
                         <p style="padding: 5px; text-align:center">{{ $item['NAMA_BARANG'] }}</p>
                     </td>
@@ -275,7 +278,15 @@
                     <td>
                         <p style="padding: 5px; text-align:right">{{ $item['TOTAL BERAT'] }}</p>
                     </td>
-
+                    <td>
+                        <p style="padding: 5px; text-align:center">{{ $item['NO_CONT'] }}</p>
+                    </td>
+                    <td>
+                        <p style="padding: 5px; text-align:center">{{ $item['JENIS_ORDER'] }}</p>
+                    </td>
+                    <td>
+                        <p style="padding: 5px; text-align:center">{{ $item['PENERIMA'] }}</p>
+                    </td>
                 </tr>
             @endforeach
 
@@ -284,12 +295,14 @@
                 <td colspan="3" style="background-color: #999999; padding: 5px;">
                     <h6>Total Barang: {{ $total_barang }}</h6>
                 </td>
-                <td colspan="5" style="background-color: #999999; padding: 5px;"></td>
+                <td colspan="4" style="background-color: #999999; padding: 5px;"></td>
                 <td colspan="1" style="background-color: #999999; padding: 5px; text-align:right;">
                     <h6>{{ $total_m3 }}</h6>
                 </td>
                 <td colspan="1" style="background-color: #999999; padding: 5px;text-align:right;">
                     <h6>{{ $total_berat }}</h6>
+                </td>
+                <td colspan="3" style="background-color: #999999; padding: 5px;text-align:right;">
                 </td>
             </tr>
         </tbody>
