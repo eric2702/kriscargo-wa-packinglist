@@ -66,15 +66,18 @@ class PackingListController extends Controller
                         return response()->json(['message' => 'Container or Seal is empty', 'success' => false], 200);
                     }
                     //container has pattern ABCD 123456, so a few letters and a few numbers, but someetimes the user gives ABCD123456, so when that happens, we need to add a space after the letters
-                    $container = preg_replace('/([a-zA-Z])([0-9])/', '$1 $2', $container);
+                    $container_spaced = preg_replace('/([a-zA-Z])([0-9])/', '$1 $2', $container);
                     //seal also has pattern letters and numbers, so we need to add a space after the letters
-                    $seal = preg_replace('/([a-zA-Z])([0-9])/', '$1 $2', $seal);
+                    $seal_spaced = preg_replace('/([a-zA-Z])([0-9])/', '$1 $2', $seal);
                     $response = Http::post('https://krislines.com/api/v1.0/segel', [
                         'token' => 'YjYyNzhiZjFkNDUwYWJmMzVhYWM5NDkwNTA0ZWEyZWI=',
-                        'segel' => $seal,
-                        'kontainer' => $container,
+                        'segel' => $seal_spaced,
+                        'kontainer' => $container_spaced,
                     ]);
                     $response = json_decode($response->getBody()->getContents(), true);
+                    if ($response['success'] == false) {
+                        return response()->json(['message' => $container . ' & ' . $seal . ' not found.', 'success' => false], 200);
+                    }
                     $header = $response['data'][0]['header'];
                     $detail = $response['data'][0]['detail'][0];
                     $barangs = $response['data'][0]['detail'];

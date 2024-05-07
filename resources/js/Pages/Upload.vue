@@ -82,7 +82,6 @@ const handleSubmit = (e) => {
                 const responseData = await response.data.text();
                 const responseJson = JSON.parse(responseData);
                 console.log(responseJson.success);
-                alert(responseJson.message);
                 if (!responseJson.success) {
                     Swal.fire({
                         icon: "error",
