@@ -88,6 +88,8 @@ const handleSubmit = (e) => {
                         title: "Error",
                         text: responseJson.message,
                     });
+                    e.target[0].value = "";
+
                     return;
                 }
             } else {
@@ -105,6 +107,9 @@ const handleSubmit = (e) => {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+
+                //remove the file from the input
+                e.target[0].value = "";
             }
         })
         .catch((error) => {
@@ -114,6 +119,8 @@ const handleSubmit = (e) => {
                 title: "Error",
                 text: message,
             });
+
+            e.target[0].value = "";
         })
         .finally(() => {
             //enable the upload button
