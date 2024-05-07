@@ -167,7 +167,7 @@
                 {{-- <h6>TOP: <span style="font-weight: normal">{{ $top }}</span></h6> --}}
             </td>
             <td>
-                <h6>BERANGKAT: <span style="font-weight: normal">{{ $tanggal_berangkat }}</span></h6>
+                <h6>ATD: <span style="font-weight: normal">{{ $tanggal_berangkat }}</span></h6>
             </td>
             {{-- <td>
                 <h6>JENIS KIRIMAN / TYPE CONT: <span style="font-weight: normal">{{ $jenis_kiriman_type_cont }}</span>
@@ -178,7 +178,10 @@
             <td>
                 {{-- <h6>LOKASI BAYAR: <span style="font-weight: normal">{{ $lokasi_bayar }}</span></h6> --}}
             </td>
+            <td>
+                <h6>ETA: <span style="font-weight: normal">{{ $tanggal_sampai }}</span></h6>
 
+            </td>
         </tr>
         <tr>
             <td></td>

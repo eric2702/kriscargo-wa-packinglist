@@ -40,7 +40,9 @@ class PackingListController extends Controller
                 $tdVessel = $this->getCellByRowAndColumn(5, 2);
                 $tdVessel = str_replace('/', '-', $tdVessel);
                 $tdVessel = date('d F Y', strtotime($tdVessel));
-                $etaVendor = $this->getCellByRowAndColumn(6, 2);
+                $etaVessel = $this->getCellByRowAndColumn(6, 2);
+                $etaVessel = str_replace('/', '-', $etaVessel);
+                $etaVessel = date('d F Y', strtotime($etaVessel));
 
                 //get table
                 $table = [];
@@ -53,6 +55,7 @@ class PackingListController extends Controller
                         'seal' => $this->getCellByRowAndColumn($row, $column + 2),
                         'size' => $this->getCellByRowAndColumn($row, $column + 3),
                         'type' => $this->getCellByRowAndColumn($row, $column + 4),
+                        'penerima' => $this->getCellByRowAndColumn($row, $column + 5),
                     ];
                     $row++;
                 }
@@ -127,15 +130,22 @@ class PackingListController extends Controller
                     $total_barang = 0;
                     $total_m3 = 0;
                     $total_berat = 0;
+                    $penerima = '';
+
                     foreach ($barangs as $barang) {
                         $total_barang += $barang['qty'];
                         $total_m3 += $barang['p'] * $barang['l'] * $barang['t'] * $barang['qty'];
                         $total_berat += $barang['berat'] * $barang['qty'];
-
+                        if ($row['penerima'] != null && $row['penerima'] != '') {
+                            $penerima = $row['penerima'];
+                        } else {
+                            $penerima = $barang['penerima'];
+                        }
                         $barangs_pdf[] = [
                             'QTY' => $barang['qty'],
                             'NO_CONT' => $header['no_kontainer'],
-                            'PENERIMA' => $barang['penerima'],
+                            // 'PENERIMA' => $barang['penerima'],
+                            'PENERIMA' => $penerima,
                             'NAMA_BARANG' => $barang['nm_inv'],
                             'P' => $barang['p'],
                             'L' => $barang['l'],
@@ -170,6 +180,7 @@ class PackingListController extends Controller
                         'kapal' => 'KM. ' . $vessel,
                         'voyage' => $voyage,
                         'tanggal_berangkat' => $tdVessel,
+                        'tanggal_sampai' => $etaVessel,
                         'total_barang' => $pdf_to_print[$kode_pengirim]['total_barang_semua'],
                         'total_m3' => $pdf_to_print[$kode_pengirim]['total_m3_semua'],
                         'total_berat' => $pdf_to_print[$kode_pengirim]['total_berat_semua'],
