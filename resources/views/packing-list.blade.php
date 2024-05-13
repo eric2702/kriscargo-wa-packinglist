@@ -114,10 +114,10 @@
                     alt="">
                 <div style="margin-left:10px">
                     <h5 style="">PT KRIS CARGO BAHTERA</h5>
-                    <p><a href="https://www.kriscargo.co.id">www.kriscargo.co.id</a></p>
                     <p>Jl. Bubutan 16-22, Blok B-18</p>
                     <p>Surabaya</p>
                     <p>Telp. 031-5326656 / 031-5326657</p>
+                    <p><a href="https://www.kriscargo.co.id">www.kriscargo.co.id</a></p>
                 </div>
             </td>
 
