@@ -109,11 +109,12 @@
     <table class="header">
         <tr>
             <td>
-                <img style="height:60px; float:left;"
+                <img style="height:70px; float:left;"
                     src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/logo.png'))) }}"
                     alt="">
                 <div style="margin-left:10px">
                     <h5 style="">PT KRIS CARGO BAHTERA</h5>
+                    <p><a href="https://www.kriscargo.co.id">www.kriscargo.co.id</a></p>
                     <p>Jl. Bubutan 16-22, Blok B-18</p>
                     <p>Surabaya</p>
                     <p>Telp. 031-5326656 / 031-5326657</p>
@@ -282,7 +283,12 @@
                         <p style="padding: 5px; text-align:right">{{ $item['TOTAL BERAT'] }}</p>
                     </td>
                     <td>
-                        <p style="padding: 5px; text-align:center">{{ $item['NO_CONT'] }}</p>
+                        @php
+                            $no_cont_no_space = str_replace(' ', '', $item['NO_CONT']);
+                        @endphp
+                        <p style="padding: 5px; text-align:center"><a
+                                href="https://kriscargo.co.id/index.php?track={{ $no_cont_no_space }}">{{ $item['NO_CONT'] }}</a>
+                        </p>
                     </td>
                     <td>
                         <p style="padding: 5px; text-align:center">{{ $item['JENIS_ORDER'] }}</p>
