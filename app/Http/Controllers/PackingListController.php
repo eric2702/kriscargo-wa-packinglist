@@ -131,6 +131,7 @@ class PackingListController extends Controller
                     $total_m3 = 0;
                     $total_berat = 0;
                     $penerima = '';
+                    $no_container_already_exists = false;
 
                     foreach ($barangs as $barang) {
                         $total_barang += $barang['qty'];
@@ -140,6 +141,12 @@ class PackingListController extends Controller
                             $penerima = $row['penerima'];
                         } else {
                             $penerima = $barang['penerima'];
+                        }
+                        // if this is the first barang then include the no kontainer, else just ''
+                        if ($no_container_already_exists == false) {
+                            $no_container_already_exists = true;
+                        } else {
+                            $header['no_kontainer'] = '';
                         }
                         $barangs_pdf[] = [
                             'QTY' => $barang['qty'],
