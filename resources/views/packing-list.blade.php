@@ -214,11 +214,13 @@
                     <h6>NO</h6>
                 </th>
                 <th style="padding: 5px;">
-                    <h6>QTY</h6>
+                    <h6>CONTAINER</h6>
                 </th>
-
                 <th style="padding: 5px;">
                     <h6>NAMA BARANG</h6>
+                </th>
+                <th style="padding: 5px;">
+                    <h6>QTY</h6>
                 </th>
                 <th style="padding: 5px;">
                     <h6>P</h6>
@@ -238,9 +240,7 @@
                 <th style="padding: 5px;">
                     <h6>TOTAL BERAT</h6>
                 </th>
-                <th style="padding: 5px;">
-                    <h6>CONTAINER</h6>
-                </th>
+
                 <th style="padding: 5px;">
                     <h6>JENIS ORDER</h6>
                 </th>
@@ -258,11 +258,20 @@
                         <p style="padding: 5px; text-align:center">{{ $loop->iteration }}</p>
                     </td>
                     <td>
-                        <p style="padding: 5px; text-align:center">{{ $item['QTY'] }}</p>
+                        @php
+                            $no_cont_no_space = str_replace(' ', '', $item['NO_CONT']);
+                        @endphp
+                        <p style="padding: 5px; text-align:center"><a
+                                href="https://kriscargo.co.id/index.php?track={{ $no_cont_no_space }}">{{ $item['NO_CONT'] }}</a>
+                        </p>
                     </td>
+
 
                     <td>
                         <p style="padding: 5px; text-align:center">{{ $item['NAMA_BARANG'] }}</p>
+                    </td>
+                    <td>
+                        <p style="padding: 5px; text-align:center">{{ $item['QTY'] }}</p>
                     </td>
                     <td>
                         <p style="padding: 5px; text-align:right">{{ $item['P'] }}</p>
@@ -282,14 +291,7 @@
                     <td>
                         <p style="padding: 5px; text-align:right">{{ $item['TOTAL BERAT'] }}</p>
                     </td>
-                    <td>
-                        @php
-                            $no_cont_no_space = str_replace(' ', '', $item['NO_CONT']);
-                        @endphp
-                        <p style="padding: 5px; text-align:center"><a
-                                href="https://kriscargo.co.id/index.php?track={{ $no_cont_no_space }}">{{ $item['NO_CONT'] }}</a>
-                        </p>
-                    </td>
+
                     <td>
                         <p style="padding: 5px; text-align:center">{{ $item['JENIS_ORDER'] }}</p>
                     </td>
@@ -301,7 +303,9 @@
 
             {{-- give some kind of a thead of total barang (spans 3 column) --}}
             <tr style="border: 1px solid #000;">
-                <td colspan="3" style="background-color: #999999; padding: 5px;">
+                <td colspan="2" style="background-color: #999999; padding: 5px;text-align:right;">
+                </td>
+                <td colspan="2" style="background-color: #999999; padding: 5px;">
                     <h6>Total Barang: {{ $total_barang }}</h6>
                 </td>
                 <td colspan="4" style="background-color: #999999; padding: 5px;"></td>
@@ -311,7 +315,7 @@
                 <td colspan="1" style="background-color: #999999; padding: 5px;text-align:right;">
                     <h6>{{ $total_berat }}</h6>
                 </td>
-                <td colspan="3" style="background-color: #999999; padding: 5px;text-align:right;">
+                <td colspan="2" style="background-color: #999999; padding: 5px;text-align:right;">
                 </td>
             </tr>
         </tbody>
