@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 class PackingListController extends Controller
 {
     private $sheet;
-    public function waBlastPackingList(Request $request)
+    public function fclWaBlastPackingList(Request $request)
     {
         // Your existing code to generate payslip data goes here...
         $file = $request->file('file');
@@ -231,6 +231,221 @@ class PackingListController extends Controller
             return response()->json(['message' => $e->getMessage(), 'success' => false], 500);
         }
     }
+
+    public function lclWaBlastPackingList(Request $request)
+    {
+        // Your existing code to generate payslip data goes here...
+        $trip_no = $request->trip_no;
+        try {
+            $zip = new ZipArchive;
+            // $zipFileName = 'Payslips_' . date('Ymd_His') . '.zip';
+            $currentTime = date('H.i.s');
+            $zipFileName =  'Packing List ' . ' (' . $currentTime . ')' . '.zip';
+            $zipFilePath = storage_path('app/' . $zipFileName);
+            $array_pdf_to_delete = [];
+            if ($zip->open($zipFilePath, ZipArchive::CREATE) === true) {
+                $response = Http::post('https://krislines.com/api/v1.0/trip_isi', [
+                    'token' => 'YjYyNzhiZjFkNDUwYWJmMzVhYWM5NDkwNTA0ZWEyZWI=',
+                    'trip_no' => $trip_no
+                ]);
+                $response = json_decode($response->getBody()->getContents(), true);
+
+                if ($response['success'] == false) {
+                    return response()->json(['message' => $trip_no . ' not found.', 'success' => false], 200);
+                }
+                $datas = $response['data'];
+                $pdf_to_print = [];
+                for ($i = 0; $i < count($datas); $i++) {
+                    $data = $datas[$i];
+                    $kode_cust = $data['kd_cust'];
+
+                    if ($kode_cust != 'MIT.000010' && $kode_cust != 'MIT.000167') {
+                        continue;
+                    }
+                    //make the pdf_to_print become like this data
+                    // {
+                    //     "MIT.1": {
+                    //         "cust_details": {
+                    //             "nama": "pengirim_nama", //+
+                    //             "alamat": "pengirim_alamat", //+
+                    //             "telp": "pengirim_telp" //+
+                    //         },
+                    //         "data": {
+                    //             "total_semua_m3": "total_semua_m3",
+                    //             "total_semua_berat": "total_semua_berat",
+                    //             "MRTU1234": [
+                    //                 {
+                    //                     "tgl_layar": "tgl_layar",
+                    //                     "tgls": "tgls",
+                    //                     "voyage_no": "voyage_no",
+                    //                     "rute": "rute",
+                    //                     "kapal": "kapal",
+                    //                     "nama_barang": "nama_barang",
+                    //                     "qty": "qty",
+                    //                     "p": "p",
+                    //                     "l": "l",
+                    //                     "t": "t",
+                    //                     "w": "w", //+
+                    //                     "total_m3": "total_m3",
+                    //                     "total_berat": "total_berat",
+                    //                     "penerima": "penerima" //+
+                    //                 },
+                    //                 {
+                    //                     "tgl_layar": "tgl_layar",
+                    //                     "tgls": "tgls",
+                    //                     "voyage_no": "voyage_no",
+                    //                     "rute": "rute",
+                    //                     "kapal": "kapal",
+                    //                     "nama_barang": "nama_barang",
+                    //                     "qty": "qty",
+                    //                     "p": "p",
+                    //                     "l": "l",
+                    //                     "t": "t",
+                    //                     "w": "w", //+
+                    //                     "total_m3": "total_m3",
+                    //                     "total_berat": "total_berat",
+                    //                     "penerima": "penerima" //+
+                    //                 }
+                    //             ]
+                    //         }
+                    //     }
+                    // }
+
+                    $current_customer_name = $data['nm_cust'];
+
+
+                    $no_kontainer = $data['no_kontainer'];
+                    $tgl = $data['tgl'];
+                    $tgl = str_replace('/', '-', $tgl);
+                    $tgl = date('d F Y', strtotime($tgl));
+                    $tgls = $data['tgls'];
+                    $tgls = str_replace('/', '-', $tgls);
+                    $tgls = date('d F Y', strtotime($tgls));
+                    $voyage_no = $data['voyage_no'];
+                    $rute = $data['nm_from'] . '-' . $data['nm_to'];
+                    $kapal = $data['sip'];
+                    $nama_barang = $data['nm_inv'];
+                    $qty = $data['qty'];
+                    $p = $data['p'];
+                    $l = $data['l'];
+                    $t = $data['t'];
+                    $w = 1;
+                    $total_m3 = $p * $l * $t * $qty;
+                    $total_berat = $w * $qty;
+                    $penerima = "PENERIMA";
+                    $nomor_konosemen = "NOMOR KONO";
+                    $jenis_order = $data['muatan'];
+
+                    // Check if the key already exists in the array, if not initialize it and also total_semua_m3 and total_semua_berat
+                    if (!isset($pdf_to_print[$kode_cust])) {
+                        $response = Http::post('https://krislines.com/api/v1.0/customer', [
+                            'token' => 'YjYyNzhiZjFkNDUwYWJmMzVhYWM5NDkwNTA0ZWEyZWI=',
+                            'kode' => $kode_cust,
+                        ]);
+
+                        $response = json_decode($response->getBody()->getContents(), true);
+                        $alamat_cust = $response['data'][0]['alamat'];
+                        $telp_cust = $response['data'][0]['telp'];
+                        $pdf_to_print[$kode_cust] = [
+                            'cust_details' => [
+                                'nama' => $current_customer_name,
+                                'alamat' => $alamat_cust,
+                                'telp' => $telp_cust,
+                                'nomor_konosemen' => $nomor_konosemen,
+                                'rute' => $rute,
+                            ],
+                            'data' => [
+                                'total_semua_m3' => 0,
+                                'total_semua_berat' => 0,
+                                'total_semua_qty' => 0,
+                                'items' => [],
+                            ],
+                        ];
+                    }
+
+                    $pdf_to_print[$kode_cust]['data']['total_semua_m3'] += $total_m3;
+                    $pdf_to_print[$kode_cust]['data']['total_semua_berat'] += $total_berat;
+                    $pdf_to_print[$kode_cust]['data']['total_semua_qty'] += $qty;
+
+                    $pdf_to_print[$kode_cust]['data']['items'][] = [
+                        'NO_CONT' => $data['no_kontainer'],
+                        'tgl' => $tgl,
+                        'tgls' => $tgls,
+                        'voyage_no' => $voyage_no,
+                        'kapal' => $kapal,
+                        'NAMA_BARANG' => $nama_barang,
+                        'QTY' => $qty,
+                        'P' => $p,
+                        'L' => $l,
+                        'T' => $t,
+                        'W' => $w,
+                        'TOTAL M3' => $total_m3,
+                        'TOTAL BERAT' => $total_berat,
+                        'PENERIMA' => $penerima,
+                        'JENIS_ORDER' => $jenis_order
+                    ];
+                }
+
+                for ($i = 0; $i < count($pdf_to_print); $i++) {
+                    $kode_pengirim = array_keys($pdf_to_print)[$i];
+
+
+                    $pdf = new DomPdf();
+                    $pdf->loadHtml(View::make('lcl-packing-list', [
+                        'nomor_konosemen' => $pdf_to_print[$kode_pengirim]['cust_details']['nomor_konosemen'],
+                        'customer' => $pdf_to_print[$kode_pengirim]['cust_details']['nama'],
+                        'alamat' => $pdf_to_print[$kode_pengirim]['cust_details']['alamat'],
+                        'no_telp' => $pdf_to_print[$kode_pengirim]['cust_details']['telp'],
+                        'rute' => $pdf_to_print[$kode_pengirim]['cust_details']['rute'],
+                        'trip' => $trip_no,
+                        'kapal' => 'KM. ' . $pdf_to_print[$kode_pengirim]['data']['items'][0]['kapal'],
+                        'voyage' => $pdf_to_print[$kode_pengirim]['data']['items'][0]['voyage_no'],
+                        'tanggal_berangkat' => $pdf_to_print[$kode_pengirim]['data']['items'][0]['tgl'],
+                        'tanggal_sampai' => $pdf_to_print[$kode_pengirim]['data']['items'][0]['tgls'],
+                        'total_barang' => $pdf_to_print[$kode_pengirim]['data']['total_semua_qty'],
+                        'total_m3' => $pdf_to_print[$kode_pengirim]['data']['total_semua_m3'],
+                        'total_berat' => $pdf_to_print[$kode_pengirim]['data']['total_semua_berat'],
+                        'barang' => $pdf_to_print[$kode_pengirim]['data']['items'],
+
+                    ])->render());
+                    $pdf->setPaper('A4', 'portrait');
+                    $pdf->render();
+                    //check if $pdf_to_print[$kode_pengirim]['cust_details']['nama'] is free of characters that are not allowed in file names and replace them with whitespace
+                    $pdf_to_print[$kode_pengirim]['cust_details']['nama'] = preg_replace('/[^A-Za-z0-9\-]/', ' ', $pdf_to_print[$kode_pengirim]['cust_details']['nama']);
+                    //with counter
+                    $pdfFileName = 'Packing List ' . $pdf_to_print[$kode_pengirim]['cust_details']['nama'] . ' (' . $i + 1 . ').pdf';
+                    // $pdfFileName = 'Packing List ' . $container . '.pdf';
+                    //just return the pdf and don't save it
+                    // return $pdf->stream($pdfFileName);
+
+                    $pdfFilePath = storage_path('app/' . $pdfFileName);
+                    file_put_contents($pdfFilePath, $pdf->output());
+                    $zip->addFile($pdfFilePath, $pdfFileName);
+                    $array_pdf_to_delete[] = $pdfFilePath;
+                }
+
+                $zip->close();
+                // //delete all the pdf files
+                foreach ($array_pdf_to_delete as $pdf_to_delete) {
+                    unlink($pdf_to_delete);
+                }
+
+                //get the binary content of the zip file, so we can delete it before returning the response
+                $zipFileBinary = file_get_contents($zipFilePath);
+                //delete the zip file
+                unlink($zipFilePath);
+                //return the binary content of the zip file
+                return response($zipFileBinary)
+                    ->header('Content-Type', 'application/zip')
+                    ->header('Content-Disposition', 'attachment; filename="' . $zipFileName . '"');
+            }
+        } catch (\Exception $e) {
+            // Exception occurred
+            return response()->json(['message' => $e->getMessage(), 'success' => false], 200);
+        }
+    }
+
+
 
     private function getCellByRowAndColumn($row, $column)
     {

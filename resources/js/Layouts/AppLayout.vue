@@ -61,10 +61,16 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
                                 <NavLink
-                                    :href="route('upload')"
-                                    :active="route().current('upload')"
+                                    :href="route('fcl')"
+                                    :active="route().current('fcl')"
                                 >
-                                    Upload
+                                    FCL
+                                </NavLink>
+                                <NavLink
+                                    :href="route('lcl')"
+                                    :active="route().current('lcl')"
+                                >
+                                    LCL
                                 </NavLink>
                             </div>
                         </div>
@@ -356,10 +362,10 @@ const logout = () => {
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            :href="route('upload')"
-                            :active="route().current('upload')"
+                            :href="route('fcl')"
+                            :active="route().current('fcl')"
                         >
-                            Upload
+                            Fcl
                         </ResponsiveNavLink>
                     </div>
 

@@ -25,11 +25,16 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::get('/upload', function () {
-        return Inertia::render('Upload');
-    })->name('upload');
+    Route::get('/fcl', function () {
+        return Inertia::render('Fcl');
+    })->name('fcl');
 
-    Route::post('/wa-blast/packing-list', [PackingListController::class, 'waBlastPackingList'])->name('waBlastPackingList');
+    Route::get('/lcl', function () {
+        return Inertia::render('Lcl');
+    })->name('lcl');
+
+    Route::post('/wa-blast/fcl-packing-list', [PackingListController::class, 'fclWaBlastPackingList'])->name('fclWaBlastPackingList');
+    Route::post('/wa-blast/lcl-packing-list', [PackingListController::class, 'lclWaBlastPackingList'])->name('lclWaBlastPackingList');
 
     Route::get('/pl', function () {
         //return packing-list.blade.php laravel blade file
